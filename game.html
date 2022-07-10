@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brick Breaker</title>
+    <style>
+        .playground{
+            background: aqua;
+        }
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        .brick {
+            background: #601222;
+            height: 28px;
+            width: 58px;
+            border-radius: 3px;
+            border: 1px solid #d7bec3;
+            display: inline-block;
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gameContainer" style="position: relative; height: 600px; width: 600px; margin: 100px; background: lightblue; border: 1px solid black;">
+
+        <div class="brickContainer" style="height: 30px; width: 100%; background: #f2dce1"></div>
+
+        <canvas id="playground" style="height: 550px; width: 100%" height="550" width="600">
+
+        </canvas>
+
+        <div class="paddleContainer" style="height: 20px; width: 100%; background: seagreen;position: relative; margin-top: -4px" >
+            <div id="paddle" style="position: absolute; height: 16px; width: 116px; border: 2px solid orangered; background: orange; border-radius: 5px"></div>
+        </div>
+
+
+        <h3>Score:- <span id="score"></span></h3>
+
+    </div>
+
+
+    <script>
+        var brickContainer = document.getElementsByClassName("brickContainer")[0];
+
+        for( var i = 1; i <= 10 ; i++){
+            brickContainer.innerHTML = brickContainer.innerHTML + '<div id="brick-'+ i +'" class="brick"></div>';
+        }
+
+        var paddle = document.getElementById("paddle");
+
+        var movePaddle = 48;
+
+        // alert( paddle.style.left );
+
+        paddle.style.left = "0px";
+        document.onkeydown = checkKey;
+
+
+        var movePaddle = true;
+
+        function checkKey(e) {
+            e = e || window.event;
+
+             if (e.keyCode == '37' && movePaddle) {
+                 if(  parseInt(paddle.style.left) != 0 ){
+                     paddle.style.left = ( parseInt(paddle.style.left) - 48 ) + "px" ;
+                 }
+             }
+
+             if (e.keyCode == '39' && movePaddle) {
+                 if(  parseInt(paddle.style.left) < 480 ){
+                     paddle.style.left = ( parseInt(paddle.style.left) + 48 ) + "px" ;
+                 }
+
+             }
+        }
+
+        var canvas = document.getElementById("playground");
+
+        var fps = 30;
+
+        var ds = 15;
+
+        var px , py;
+
+        var vx , vy;
+
+        var context = canvas.getContext("2d");
+
+
+        px = canvas.width / 2;
+
+        py = 0;
+
+        vy = ( 150 + Math.random()*100 ) / fps;
+
+
+        if( Math.random() < 0.5 ){
+            vx = -1* ( 150 + Math.random()*100 ) / fps;
+        } else {
+            vx = ( 150 + Math.random()*100 ) / fps;
+        }
+
+
+        var score = 0;
+
+        var scorer = document.getElementById("score");
+
+        scorer.innerHTML = score;
+
+
+        var interval =  setInterval( update , 1000/30 )
+
+        function update(){
+            px += vx;
+
+            py += vy;
+
+
+            if( px <  0  && vx < 0 ) {
+                vx = -vx
+            }
+
+            if( px >  canvas.width  && vx > 0 ) {
+                vx = -vx
+            }
+
+            if( py + ( ds/2 )  > canvas.height  && vy > 0  ){
+
+                var  paddleStart = parseInt( paddle.style.left );
+
+                var paddleEnd = paddleStart + 120;
+
+                if( px > paddleStart && px < paddleEnd ){
+                    score += 10;
+                    scorer.innerHTML = score;
+
+                    vx = vx + 0.5;
+                    vy = vy+ 0.5;
+
+                } else {
+                    clearInterval(interval);
+                    movePaddle = false;
+                    return;
+                }
+            }
+
+
+
+            if(py + ( ds/2 ) >  canvas.height  && vy > 0 ) {
+                vy = -vy
+            }
+
+
+            if( py < 0 && vy < 0 ){
+
+                detectBrick( px );
+            }
+
+            if( py <  0  && vy < 0 ) {
+                vy = -vy
+            }
+
+
+            context.fillStyle = "aqua";
+
+            context.fillRect(0 , 0 , canvas.width , canvas.height);
+
+            context.fillStyle = "red";
+
+            context.fillRect( px , py , ds , ds);
+
+        }
+
+
+        function detectBrick( position ){
+            if( position>= 0 && position < 60 ){
+                document.getElementById("brick-"+1).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            } else if( position>= 60 && position < 120 ){
+                document.getElementById("brick-"+2).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 120 && position < 180 ){
+                document.getElementById("brick-"+3).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 180 && position < 240 ){
+                document.getElementById("brick-"+4).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 240 && position < 300 ){
+                document.getElementById("brick-"+5).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 300 && position < 360 ){
+                document.getElementById("brick-"+6).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 360 && position < 420 ){
+                document.getElementById("brick-"+7).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 420 && position < 480 ){
+                document.getElementById("brick-"+8).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 480 && position < 540 ){
+                document.getElementById("brick-"+9).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }else if( position>= 540 && position <= 600 ){
+                document.getElementById("brick-"+10).style.visibility = "hidden";
+                score += 50;
+                scorer.innerHTML = score;
+            }
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
